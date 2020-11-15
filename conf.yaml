@@ -1,0 +1,7 @@
+server:
+  mqtt:
+    broker: tcp://forsun.icu:1883
+    client: raspi
+    username: forson
+    password: 99589958
+    cleansession: true

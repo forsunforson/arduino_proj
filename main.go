@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/forsun/arduino_proj/arduino"
-	"github.com/forsun/arduino_proj/serial"
+	"github.com/forsunforson/arduino_proj/serial"
+
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
 func main() {
@@ -19,9 +20,20 @@ func main() {
 	// soundFile := "./sound.log"
 	// tempFile := "./temp.log"
 	// lightFile := "./light.log"
+	opts := mqtt.NewClientOptions()
+	opts.AddBroker("tcp://forsun.icu:1883")
+	opts.SetClientID("raspi")
+	opts.SetUsername("forson")
+	opts.SetPassword("99589958")
+	opts.SetCleanSession(true)
 
+	client := mqtt.NewClient(opts)
+	if token := client.Connect(); token.Wait() && token.Error() != nil {
+		panic(token.Error())
+	}
 	var ret []byte
-	for i := 0; i < 100; i++ {
+	fmt.Println("------start-------")
+	for i := 0; i < 1000; i++ {
 		v := <-p.GetChan()
 		if v == serial.EOF {
 			fmt.Println("finished")
@@ -31,10 +43,10 @@ func main() {
 		length := len(ret)
 		if length > 2 && ret[length-2] == byte(13) && ret[length-1] == byte(10) {
 			fmt.Printf("%q\n", ret[:length-2])
+			client.Publish("toilet", 0, false, ret)
 			ret = []byte{}
 		}
 	}
-	a, _ := arduino.GetArduinos()
-	a[0].SetCoreType("uno")
-	_ = a[0].WriteHex(`/home/pi/sound_sensor.ino.with_bootloader.standard.hex`)
+	client.Disconnect(100)
+	fmt.Println("disconnected")
 }

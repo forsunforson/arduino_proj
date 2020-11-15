@@ -26,6 +26,7 @@ func init() {
 	typeMap = m
 }
 
+// GetCoreType int -> string arduino type
 func GetCoreType(t int) string {
 	for k, v := range typeMap {
 		if v == t {
@@ -35,6 +36,7 @@ func GetCoreType(t int) string {
 	return "unknow"
 }
 
+// GetCoreTypeInt string -> int see:./arduino_config.json
 func GetCoreTypeInt(coreType string) int {
 	t := strings.ToLower(coreType)
 	if v, ok := typeMap[t]; ok {

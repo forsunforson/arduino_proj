@@ -8,6 +8,8 @@ import (
 )
 
 const (
+	// DefaultBaud default baud rate
+	// Serial.begin(9600);
 	DefaultBaud = 9600
 )
 
@@ -48,10 +50,12 @@ func GetArduinos() ([]*Arduino, error) {
 	return ret, nil
 }
 
+// SetCoreType set your arduino type
 func (a *Arduino) SetCoreType(coreType string) {
 	a.coretype = GetCoreTypeInt(coreType)
 }
 
+// WriteHex use avrdude to write hex file to arduino
 func (a *Arduino) WriteHex(file string) error {
 	fmt.Printf("%v", a)
 	var cmd *exec.Cmd
